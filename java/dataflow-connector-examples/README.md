@@ -115,19 +115,21 @@ You can verify that the data was written by using HBase shell and typing `scan '
 
 # BigQueryBigtableTransfer - Copying records from BigQuery to Cloud Bigtable
 
-BigQueryBigtableTransfer shows the use of BigQuery as a source, and writes the records into Bigtable.  To make this sample generic, UUID is generated as the item key for each record.  This has to be designed before putting into actual use.
+BigQueryBigtableTransfer shows the use of BigQuery as a source, and writes the records into Bigtable.
 
     mvn package exec:exec \
         -DBigQueryBigtableTransfer \
         -Dbigtable.projectID=<projectID> \
         -Dbigtable.instanceID=<instanceID> \
-        -Dgs=<Your bucket> \
-        -Dbq.query='<BigQuery SQL (Standard SQL)>'
+        -Dbigtable.table=<tableName> \
+        -Dbigtable.region=<region> \
+        -Dbq.table=<Your BigQuery Table>
+        -Dgs=<Temporary Storage to Place Dataflow Dependency> \
+        -DserviceAccount=<Service account to access Dataflow> \
+        -Dsubnetwork=<Dataflow jobs subnetwork>
 
-You can verify the results by looking into BigTable:
-
-    gsutil ls gs://my_bucket/**
-
+Example:
+`mvn package exec:exec -DBigQueryBigtableTransfer -Dbigtable.table=test-1 -Dbigtable.projectID=indodana-prod -Dbigtable.instanceID=general -Dbigtable.region=asia-southeast2 -Dgs=gs://com-indodana-prod/temp2 -Dbq.table='data-platform-246911:temporary_big_table_migration_poc.temporary_user_activity_asd' -DserviceAccount='cermati-indodana-user-prod@indodana-prod.iam.gserviceaccount.com' -Dsubnetwork='https://www.googleapis.com/compute/v1/projects/indodana-prod/regions/asia-southeast2/subnetworks/private-asia-southeast2'`
 
 <!--
 # PubsubWordCount - Reading from Cloud Pubsub and writing to Cloud Bigtable

@@ -317,10 +317,10 @@ limitations under the License.
                 <argument>--bigtableTableId=${bigtable.table}</argument>
                 <argument>--region=${bigtable.region}</argument>
                 <argument>--bqTable=${bq.table}</argument>
-                <argument>--serviceAccount=cermati-indodana-user-prod@indodana-prod.iam.gserviceaccount.com</argument>
-                <argument>--subnetwork=https://www.googleapis.com/compute/v1/projects/indodana-prod/regions/asia-southeast2/subnetworks/private-asia-southeast2</argument>
-                <argument>--gcpTempLocation=${gs}/temp2</argument>
-                <argument>--tempLocation=${gs}/temp2</argument>
+                <argument>--serviceAccount=${serviceAccount}</argument>
+                <argument>--subnetwork=${subnetwork}</argument>
+                <argument>--gcpTempLocation=${gs}</argument>
+                <argument>--tempLocation=${gs}</argument>
                 <argument>--autoscalingAlgorithm=NONE</argument>
                 <argument>--numWorkers=1</argument>
               </arguments>
