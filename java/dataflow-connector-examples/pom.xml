@@ -27,11 +27,11 @@ limitations under the License.
       -Dbigtable.table=<Table to Read / Write>
 -->
 <project>
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.google.cloud.bigtable.dataflow</groupId>
-	<artifactId>dataflow-connector-examples</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+  <groupId>com.google.cloud.bigtable.dataflow</groupId>
+  <artifactId>dataflow-connector-examples</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <!-- Parent POM defines common plugins and properties.
@@ -46,9 +46,11 @@ limitations under the License.
   -->
 
   <properties>
-    <beam.version>2.38.0</beam.version>
-    <bigtable.version>2.3.0</bigtable.version>
-    <slf4j.version>1.7.36</slf4j.version>
+    <beam.version>2.28.0</beam.version>
+    <bigtable.version>1.26.1</bigtable.version>
+    <slf4j.version>1.7.21</slf4j.version>
+
+    <inputFile></inputFile>
     <region>us-central1</region>
     <network>default</network>
     <subnetwork></subnetwork>
@@ -58,9 +60,9 @@ limitations under the License.
     <bq.query>SELECT year, month, day, wikimedia_project, language, title, views FROM `bigquery-samples.wikipedia_benchmark.Wiki1M` limit 1000000</bq.query>
     <pubsubTopic>projects/${bigtable.projectID}/topics/shakes</pubsubTopic>
     <bigtable.hbase.version>${bigtable.version}</bigtable.hbase.version>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.source>11</maven.compiler.source>
-     <java.version>11</java.version>
+    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <java.version>1.7</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -74,62 +76,50 @@ limitations under the License.
   </repositories>
 
   <dependencies>
-     <dependency>
-       <groupId>org.apache.beam</groupId>
-       <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
-       <version>${beam.version}</version>
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-runners-google-cloud-dataflow-java</artifactId>
+      <version>${beam.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-runners-direct-java</artifactId>
+      <version>${beam.version}</version>
     </dependency>
 
     <!-- [START bigtable_dataflow_connector_dep] -->
     <dependency>
-        <groupId>com.google.cloud.bigtable</groupId>
-        <artifactId>bigtable-hbase-beam</artifactId>
-        <version>${bigtable.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-          </exclusion>
-        </exclusions>
+      <groupId>com.google.cloud.bigtable</groupId>
+      <artifactId>bigtable-hbase-beam</artifactId>
+      <version>${bigtable.version}</version>
     </dependency>
     <!-- [END bigtable_dataflow_connector_dep] -->
 
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-csv</artifactId>
-      <version>1.9.0</version>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.12.0</version>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>2.9.5</version>
     </dependency>
 
-
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>${slf4j.version}</version>
-    </dependency>
-
- </dependencies>
+  </dependencies>
 
   <profiles>  <!-- These are only required for runlocal -->
     <profile>
       <id>Test</id>
-        <activation>
-            <property>
-                <name>Test</name>
-            </property>
-        </activation>
-        <build>
-          <plugins>
+      <activation>
+        <property>
+          <name>Test</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
@@ -145,19 +135,35 @@ limitations under the License.
               </arguments>
             </configuration>
           </plugin>
-          </plugins>
-        </build>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>direct-runner</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <!-- Makes the DirectRunner available when running a pipeline. -->
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.beam</groupId>
+          <artifactId>beam-runners-direct-java</artifactId>
+          <version>${beam.version}</version>
+          <scope>runtime</scope>
+        </dependency>
+      </dependencies>
     </profile>
 
     <profile>
       <id>HelloWorldWrite</id>
-        <activation>
-            <property>
-                <name>HelloWorldWrite</name>
-            </property>
-        </activation>
-        <build>
-          <plugins>
+      <activation>
+        <property>
+          <name>HelloWorldWrite</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
@@ -173,23 +179,25 @@ limitations under the License.
                 <argument>--bigtableProjectId=${bigtable.projectID}</argument>
                 <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
                 <argument>--bigtableTableId=${bigtable.table}</argument>
-                <argument>--stagingLocation=${gs}/staging</argument>
                 <argument>--region=${bigtable.region}</argument>
+                <argument>--serviceAccount=cermati-indodana-user-prod@indodana-prod.iam.gserviceaccount.com</argument>
+                <argument>--subnetwork=https://www.googleapis.com/compute/v1/projects/indodana-prod/regions/asia-southeast2/subnetworks/private-asia-southeast2</argument>
+                <argument>--gcpTempLocation=${gs}/temp2</argument>
               </arguments>
             </configuration>
           </plugin>
-          </plugins>
-        </build>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>CsvImport</id>
-        <activation>
-            <property>
-                <name>CsvImport</name>
-            </property>
-        </activation>
-        <build>
-          <plugins>
+      <activation>
+        <property>
+          <name>CsvImport</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
@@ -215,18 +223,18 @@ limitations under the License.
               </arguments>
             </configuration>
           </plugin>
-          </plugins>
-        </build>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>SourceRowCount</id>
-        <activation>
-            <property>
-                <name>SourceRowCount</name>
-            </property>
-        </activation>
-        <build>
-          <plugins>
+      <activation>
+        <property>
+          <name>SourceRowCount</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
@@ -247,18 +255,18 @@ limitations under the License.
               </arguments>
             </configuration>
           </plugin>
-          </plugins>
-        </build>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>PubsubWordCount</id>
-        <activation>
-            <property>
-                <name>PubsubWordCount</name>
-            </property>
-        </activation>
-        <build>
-          <plugins>
+      <activation>
+        <property>
+          <name>PubsubWordCount</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>exec-maven-plugin</artifactId>
@@ -277,11 +285,11 @@ limitations under the License.
                 <argument>--stagingLocation=${gs}/staging</argument>
                 <argument>--inputFile=gs://lesv-big-public-data/books/b100</argument>
                 <argument>--pubsubTopic=${pubsubTopic}</argument>
-             </arguments>
+              </arguments>
             </configuration>
           </plugin>
-          </plugins>
-        </build>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>BigQueryBigtableTransfer</id>
@@ -307,8 +315,14 @@ limitations under the License.
                 <argument>--bigtableProjectId=${bigtable.projectID}</argument>
                 <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
                 <argument>--bigtableTableId=${bigtable.table}</argument>
-                <argument>--bqQuery=${bq.query}</argument>
-                <argument>--stagingLocation=${gs}/staging</argument>
+                <argument>--region=${bigtable.region}</argument>
+                <argument>--bqTable=${bq.table}</argument>
+                <argument>--serviceAccount=cermati-indodana-user-prod@indodana-prod.iam.gserviceaccount.com</argument>
+                <argument>--subnetwork=https://www.googleapis.com/compute/v1/projects/indodana-prod/regions/asia-southeast2/subnetworks/private-asia-southeast2</argument>
+                <argument>--gcpTempLocation=${gs}/temp2</argument>
+                <argument>--tempLocation=${gs}/temp2</argument>
+                <argument>--autoscalingAlgorithm=NONE</argument>
+                <argument>--numWorkers=1</argument>
               </arguments>
             </configuration>
           </plugin>
@@ -328,6 +342,14 @@ limitations under the License.
               <mainClass>com.example.bigtable.sample.WordCountDriver</mainClass>
             </manifest>
           </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>8</source>
+          <target>8</target>
         </configuration>
       </plugin>
 
