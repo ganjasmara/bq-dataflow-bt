@@ -96,16 +96,17 @@ public class BigQueryBigtableTransfer {
       
       Long reverseTimestamp = Long.MAX_VALUE - occurredAt.toInstant().toEpochMilli();
   
-      String usedUniqueId = (eventId != null)
+      String usedEventId = (eventId != null)
           ? eventId
-          : eventIdentityId;
+          : "null";
   
       return String.format(
-          "%s#%s#%s#%s",
+          "%s#%s#%s#%s#%s",
           userId,
           activityType,
           reverseTimestamp,
-          usedUniqueId
+          eventIdentityId,
+          usedEventId
       );
     }
 
