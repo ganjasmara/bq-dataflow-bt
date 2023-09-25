@@ -329,6 +329,44 @@ limitations under the License.
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>LocationBigQueryBigtableTransfer</id>
+      <activation>
+        <property>
+          <name>LocationBigQueryBigtableTransfer</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.4.0</version>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>com.google.cloud.bigtable.dataflow.example.LocationBigQueryBigtableTransfer</argument>
+                <argument>--runner=dataflow</argument>
+                <argument>--project=${bigtable.projectID}</argument>
+                <argument>--bigtableProjectId=${bigtable.projectID}</argument>
+                <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
+                <argument>--bigtableTableId=${bigtable.table}</argument>
+                <argument>--region=${bigtable.region}</argument>
+                <argument>--bqTable=${bq.table}</argument>
+                <argument>--serviceAccount=${serviceAccount}</argument>
+                <argument>--subnetwork=${subnetwork}</argument>
+                <argument>--gcpTempLocation=${gs}</argument>
+                <argument>--tempLocation=${gs}</argument>
+                <argument>--autoscalingAlgorithm=NONE</argument>
+                <argument>--numWorkers=1</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
   <build>
     <plugins>
