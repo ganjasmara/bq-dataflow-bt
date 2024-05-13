@@ -1,4 +1,4 @@
-package com.google.cloud.bigtable.dataflow.example;
+package com.google.cloud.bigtable.dataflow.example.useractivity;
 
 import com.google.api.services.bigquery.model.TableRow;
 import java.io.Serializable;

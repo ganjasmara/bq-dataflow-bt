@@ -1,4 +1,4 @@
-package com.google.cloud.bigtable.dataflow.example;
+package com.google.cloud.bigtable.dataflow.example.location;
 
 import com.google.api.services.bigquery.model.TableRow;
 import org.apache.avro.reflect.Nullable;
