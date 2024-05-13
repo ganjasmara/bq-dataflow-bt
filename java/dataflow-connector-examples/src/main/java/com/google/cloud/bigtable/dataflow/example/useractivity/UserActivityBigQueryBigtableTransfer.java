@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.cloud.bigtable.dataflow.example;
+package com.google.cloud.bigtable.dataflow.example.useractivity;
 
-import static com.google.cloud.bigtable.dataflow.example.UserActivity.SIGNUM_EVENT_FIELD_PREFIX;
+import static com.google.cloud.bigtable.dataflow.example.useractivity.UserActivity.SIGNUM_EVENT_FIELD_PREFIX;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -30,9 +30,11 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+
+import com.google.cloud.bigtable.dataflow.example.BigQueryBigtableTransferOptions;
+import com.google.cloud.bigtable.dataflow.example.JacksonUtil;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
-import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.MapElements;
@@ -52,7 +54,7 @@ import org.apache.hadoop.hbase.client.Put;
  * family 'cf' create 'bigquery_to_bigtable_test','cf'
  */
 
-public class BigQueryBigtableTransfer {
+public class UserActivityBigQueryBigtableTransfer {
   
   public static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule())
       .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)

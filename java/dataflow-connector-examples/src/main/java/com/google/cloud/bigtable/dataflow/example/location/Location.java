@@ -1,4 +1,4 @@
-package com.google.cloud.bigtable.dataflow.example;
+package com.google.cloud.bigtable.dataflow.example.location;
 
 public class Location {
 

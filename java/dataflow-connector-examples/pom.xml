@@ -309,7 +309,7 @@ limitations under the License.
               <arguments>
                 <argument>-classpath</argument>
                 <classpath/>
-                <argument>com.google.cloud.bigtable.dataflow.example.BigQueryBigtableTransfer</argument>
+                <argument>com.google.cloud.bigtable.dataflow.example.useractivity.UserActivityBigQueryBigtableTransfer</argument>
                 <argument>--runner=dataflow</argument>
                 <argument>--project=${bigtable.projectID}</argument>
                 <argument>--bigtableProjectId=${bigtable.projectID}</argument>
@@ -347,7 +347,45 @@ limitations under the License.
               <arguments>
                 <argument>-classpath</argument>
                 <classpath/>
-                <argument>com.google.cloud.bigtable.dataflow.example.LocationBigQueryBigtableTransfer</argument>
+                <argument>com.google.cloud.bigtable.dataflow.example.location.LocationBigQueryBigtableTransfer</argument>
+                <argument>--runner=dataflow</argument>
+                <argument>--project=${bigtable.projectID}</argument>
+                <argument>--bigtableProjectId=${bigtable.projectID}</argument>
+                <argument>--bigtableInstanceId=${bigtable.instanceID}</argument>
+                <argument>--bigtableTableId=${bigtable.table}</argument>
+                <argument>--region=${bigtable.region}</argument>
+                <argument>--bqTable=${bq.table}</argument>
+                <argument>--serviceAccount=${serviceAccount}</argument>
+                <argument>--subnetwork=${subnetwork}</argument>
+                <argument>--gcpTempLocation=${gs}</argument>
+                <argument>--tempLocation=${gs}</argument>
+                <argument>--autoscalingAlgorithm=NONE</argument>
+                <argument>--numWorkers=1</argument>
+              </arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>BatteryBigQueryBigtableTransfer</id>
+      <activation>
+        <property>
+          <name>BatteryBigQueryBigtableTransfer</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.4.0</version>
+            <configuration>
+              <executable>java</executable>
+              <arguments>
+                <argument>-classpath</argument>
+                <classpath/>
+                <argument>com.google.cloud.bigtable.dataflow.example.battery.BatteryBigQueryBigtableTransfer</argument>
                 <argument>--runner=dataflow</argument>
                 <argument>--project=${bigtable.projectID}</argument>
                 <argument>--bigtableProjectId=${bigtable.projectID}</argument>
