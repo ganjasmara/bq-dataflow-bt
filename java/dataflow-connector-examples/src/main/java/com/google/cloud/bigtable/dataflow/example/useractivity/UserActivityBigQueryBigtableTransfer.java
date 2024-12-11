@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.cloud.bigtable.beam.CloudBigtableIO;
 import com.google.cloud.bigtable.beam.CloudBigtableTableConfiguration;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -33,6 +34,7 @@ import java.time.format.DateTimeFormatterBuilder;
 
 import com.google.cloud.bigtable.dataflow.example.BigQueryBigtableTransferOptions;
 import com.google.cloud.bigtable.dataflow.example.JacksonUtil;
+import java.time.temporal.ChronoField;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
@@ -62,19 +64,18 @@ public class UserActivityBigQueryBigtableTransfer {
       .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
   
   public static final DateTimeFormatter formatter = new DateTimeFormatterBuilder()
-      .append(DateTimeFormatter.ISO_LOCAL_DATE)
-      .appendLiteral(" ")
-      .append(DateTimeFormatter.ISO_LOCAL_TIME)
-      .appendPattern("[SSS SSSSSS]")
-      .appendPattern("X")
-      .toFormatter();
+    .appendPattern("yyyy-MM-dd'T'HH:mm:ss")
+    .optionalStart()
+    .appendFraction(ChronoField.NANO_OF_SECOND, 1, 9, true)
+    .optionalEnd()
+    .toFormatter();;
   
   public static final DateTimeFormatter dateTimeBtFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
   
   static final DoFn<BigQueryUserActivity, Mutation> MUTATION_TRANSFORM = new DoFn<BigQueryUserActivity, Mutation>() {
     
     private OffsetDateTime convertStringToOffsetDateTime(String stringDateTime) {
-      return ZonedDateTime.parse(stringDateTime, formatter).withZoneSameInstant(ZoneOffset.UTC).toOffsetDateTime();
+      return LocalDateTime.parse(stringDateTime, formatter).atOffset(ZoneOffset.UTC);
     }
   
     private JsonNode convertRawActivityToJsonNode(String rawActivity) {

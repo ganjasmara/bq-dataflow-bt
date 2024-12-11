@@ -2,7 +2,7 @@ package com.google.cloud.bigtable.dataflow.example.location;
 
 import com.google.api.services.bigquery.model.TableRow;
 import org.apache.avro.reflect.Nullable;
-import org.apache.beam.sdk.coders.AvroCoder;
+import org.apache.beam.sdk.extensions.avro.coders.AvroCoder;
 import org.apache.beam.sdk.coders.DefaultCoder;
 
 import java.io.Serializable;

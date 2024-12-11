@@ -3,7 +3,7 @@ package com.google.cloud.bigtable.dataflow.example.useractivity;
 import com.google.api.services.bigquery.model.TableRow;
 import java.io.Serializable;
 import org.apache.avro.reflect.Nullable;
-import org.apache.beam.sdk.coders.AvroCoder;
+import org.apache.beam.sdk.extensions.avro.coders.AvroCoder;
 import org.apache.beam.sdk.coders.DefaultCoder;
 
 @DefaultCoder(AvroCoder.class)

@@ -46,7 +46,7 @@ limitations under the License.
   -->
 
   <properties>
-    <beam.version>2.57.0</beam.version>
+    <beam.version>2.61.0</beam.version>
     <bigtable.version>1.26.1</bigtable.version>
     <slf4j.version>1.7.21</slf4j.version>
 
@@ -87,6 +87,14 @@ limitations under the License.
       <artifactId>beam-runners-direct-java</artifactId>
       <version>${beam.version}</version>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.beam/beam-sdks-java-extensions-avro -->
+    <dependency>
+      <groupId>org.apache.beam</groupId>
+      <artifactId>beam-sdks-java-extensions-avro</artifactId>
+      <version>${beam.version}</version>
+    </dependency>
+
 
     <!-- [START bigtable_dataflow_connector_dep] -->
     <dependency>
@@ -462,8 +470,8 @@ limitations under the License.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>8</source>
-          <target>8</target>
+          <source>11</source>
+          <target>11</target>
         </configuration>
       </plugin>
 
